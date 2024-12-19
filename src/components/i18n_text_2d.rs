@@ -13,13 +13,14 @@ fn on_add_text(mut world: DeferredWorld, entity: Entity, _: ComponentId) {
     world.commands().entity(entity).observe(
         move |trigger: Trigger<UpdatedTranslation>,
               mut commands: Commands,
-              translation_q: Query<&I18nTranslation>,
-              mut text_q: Query<&mut Text2d>| {
+              translation_q: Query<(&I18nTranslation, &I18nFont)>,
+              mut text_q: Query<(&mut Text2d, &mut TextFont)>| {
             let e = trigger.0;
 
-            if let Ok(translated) = translation_q.get(e) {
-                if let Ok(mut text) = text_q.get_mut(e) {
+            if let Ok((translated, font)) = translation_q.get(e) {
+                if let Ok((mut text, mut text_font)) = text_q.get_mut(e) {
                     text.0 = translated.value().to_string();
+                    text_font.font_size = font.size;
                 } else {
                     commands
                         .entity(e)

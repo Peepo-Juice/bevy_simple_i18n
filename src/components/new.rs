@@ -10,7 +10,7 @@ use fixed_decimal::FixedDecimal;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-#[require(I18nFont, I18nTranslation)]
+#[require(I18nFont(|| I18nFont{size: 12., ..default()}), I18nTranslation)]
 pub struct I18nString {
     /// Translation key for i18n
     pub key: String,

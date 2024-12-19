@@ -1,6 +1,6 @@
 use crate::prelude::new::{I18nTranslation, UpdatedTranslation};
 
-use super::new::I18nString;
+use super::new::{I18nFont, I18nString};
 use bevy::prelude::*;
 use bevy::{
     ecs::{component::ComponentId, world::DeferredWorld},
@@ -19,16 +19,15 @@ fn on_add_text(mut world: DeferredWorld, entity: Entity, _: ComponentId) {
     world.commands().entity(entity).observe(
         move |trigger: Trigger<UpdatedTranslation>,
               mut commands: Commands,
-              translation_q: Query<&I18nTranslation>,
-              mut text_q: Query<&mut Text>| {
+              translation_q: Query<(&I18nTranslation, &I18nFont)>,
+              mut text_q: Query<(&mut Text, &mut TextFont)>| {
             let e = trigger.0;
 
-            if let Ok(translated) = translation_q.get(e) {
-                if let Ok(mut text) = text_q.get_mut(e) {
-                    println!("translated.value().to_string() {:?}", translated.value().to_string());
+            if let Ok((translated, font)) = translation_q.get(e) {
+                if let Ok((mut text, mut text_font)) = text_q.get_mut(e) {
                     text.0 = translated.value().to_string();
+                    text_font.font_size = font.size;
                 } else {
-                    println!("new");
                     commands
                         .entity(e)
                         .insert(Text::new(translated.value().to_string()));

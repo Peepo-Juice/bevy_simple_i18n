@@ -30,10 +30,10 @@ fn setup(mut commands: Commands) {
             parent.spawn((
                 I18nText,
                 I18nString::new("hello"),
-                I18nFont {
-                    family: "NotoSans".to_string(),
-                    size: 12.,
-                },
+                // I18nFont {
+                //     family: "NotoSans".to_string(),
+                //     size: 12.,
+                // },
             ));
 
             // Basic usage of the i18n number component
@@ -50,10 +50,10 @@ fn setup(mut commands: Commands) {
             parent.spawn((
                 I18nText,
                 I18nString::new("messages.hello").with_arg("name", "Bevy User"),
-                I18nFont {
-                    family: "NotoSans".to_string(),
-                    size: 12.,
-                },
+                // I18nFont {
+                //     family: "NotoSans".to_string(),
+                //     size: 12.,
+                // },
             ));
         });
 
@@ -63,7 +63,7 @@ fn setup(mut commands: Commands) {
         I18nString::new("text2d"),
         I18nFont {
             family: "NotoSans".to_string(),
-            size: 12.,
+            size: 36.,
         },
         Transform::from_xyz(300., 300., 0.),
     ));
