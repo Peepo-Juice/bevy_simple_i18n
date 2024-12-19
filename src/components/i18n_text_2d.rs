@@ -6,7 +6,7 @@ use bevy::{
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-#[require(I18nNumber)]
+#[require(I18nString)]
 #[component(on_add = on_add_text)]
 pub struct I18nText2d;
 fn on_add_text(mut world: DeferredWorld, entity: Entity, _: ComponentId) {

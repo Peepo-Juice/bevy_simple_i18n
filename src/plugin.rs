@@ -96,13 +96,14 @@ fn update_translations(
         (),
         Or<(
             Changed<I18nString>,
-            Changed<I18nNumber>,
+            // Changed<I18nNumber>,
             Changed<I18nLocale>,
         )>,
     >,
     mut text_query: Query<(
         Entity,
-        AnyOf<(&I18nString, &I18nNumber)>,
+        // AnyOf<(&I18nString, &I18nNumber)>,
+        &I18nString,
         &mut I18nTranslation,
         Option<&I18nLocale>,
     )>,
@@ -112,14 +113,14 @@ fn update_translations(
     // currently this always iterates over every entity
     // it would be nice if it didnt do that if a single entity was changed
     if i18n.is_changed() || !changed_query.is_empty() {
-        for (entity, (text_opt, num_opt), mut translation, locale) in &mut text_query {
-            let new_text = if let Some(text) = text_opt {
-                translate_by_key(&locale.locale(), &text.key, &text.args)
-            } else {
-                let num = num_opt.unwrap();
-                get_formatter(&locale.locale(), &num.fixed_decimal)
-                    .format_to_string(&num.fixed_decimal)
-            };
+        for (entity, string, mut translation, locale) in &mut text_query {
+            // let new_text = if let Some(text) = text_opt {
+            let new_text = translate_by_key(&locale.locale(), &string.key, &string.args);
+            // } else {
+            //     let num = num_opt.unwrap();
+            //     get_formatter(&locale.locale(), &num.fixed_decimal)
+            //         .format_to_string(&num.fixed_decimal)
+            // };
 
             translation.set(new_text);
             commands.trigger_targets(UpdatedTranslation(entity), entity);

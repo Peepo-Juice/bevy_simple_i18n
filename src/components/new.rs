@@ -44,20 +44,20 @@ impl I18nString {
     }
 }
 
-#[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
-#[require(I18nFont, I18nTranslation)]
-pub struct I18nNumber {
-    #[reflect(ignore)]
-    pub(crate) fixed_decimal: FixedDecimal,
-}
-impl I18nNumber {
-    pub fn new(number: impl Into<f64>) -> Self {
-        Self {
-            fixed_decimal: f64_to_fd(number.into()),
-        }
-    }
-}
+// #[derive(Component, Default, Reflect, Debug, Clone)]
+// #[reflect(Component)]
+// #[require(I18nFont, I18nTranslation)]
+// pub struct I18nNumber {
+//     #[reflect(ignore)]
+//     pub(crate) fixed_decimal: FixedDecimal,
+// }
+// impl I18nNumber {
+//     pub fn new(number: impl Into<f64>) -> Self {
+//         Self {
+//             fixed_decimal: f64_to_fd(number.into()),
+//         }
+//     }
+// }
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
