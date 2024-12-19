@@ -1,5 +1,6 @@
 {
   "_version": 1,
+  "number":"%{number}",
   "hello": "こんにちは",
   "messages.hello": "%{name}さん、こんにちは"
 }

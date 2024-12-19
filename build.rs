@@ -57,6 +57,9 @@ fn main() {
                     None
                 })
                 .and_then(|path| {
+                    cargo_emit::warning!(
+                        "AAAAAAAAA {:?}", path
+                    );
                     if path.exists() {
                         Some(path)
                     } else {

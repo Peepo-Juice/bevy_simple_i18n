@@ -1,4 +1,27 @@
 _version: 2
+number:
+  en: "%{number}"
+  zh-TW: "%{number}"
+  es: "%{number}"
+  fr: "%{number}"
+  de: "%{number}"
+  ja: "%{number}"
+  ko: "%{number}"
+  pt: "%{number}"
+  ru: "%{number}"
+  it: "%{number}"
+  tr: "%{number}"
+  nl: "%{number}"
+  pl: "%{number}"
+  cs: "%{number}"
+  sv: "%{number}"
+  da: "%{number}"
+  fi: "%{number}"
+  no: "%{number}"
+  hu: "%{number}"
+  th: "%{number}"
+  uk: "%{number}"
+  sl: "%{number}"
 hello:
   en: Hello world
   zh-TW: 你好世界
