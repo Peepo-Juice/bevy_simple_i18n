@@ -1,4 +1,7 @@
-use super::new::*;
+use super::{
+    i18n_font::UpdatedFont, i18n_font_size::UpdatedFontSize, i18n_string::I18nString,
+    i18n_translation::UpdatedTranslation,
+};
 use bevy::{
     ecs::{component::ComponentId, world::DeferredWorld},
     prelude::*,

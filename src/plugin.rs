@@ -1,8 +1,13 @@
+use crate::prelude::i18n_font::{I18nFont, UpdatedFont};
+use crate::prelude::i18n_font_size::{I18nFontSize, UpdatedFontSize};
+use crate::prelude::i18n_locale::{I18nLocale, LocaleExt};
+use crate::prelude::i18n_string::I18nString;
+use crate::prelude::i18n_translation::{I18nTranslation, UpdatedTranslation};
 use crate::prelude::utils::get_formatter;
 use crate::{
     // components::{I18nFont, I18nNumber, I18nText},
     // prelude::{new::I18nLocale, I18nComponent, I18nText2d},
-    prelude::{new::*, utils::translate_by_key},
+    prelude::utils::translate_by_key,
     resources::{FontFolder, FontManager, FontsLoading, I18n},
     FONT_FAMILIES,
 };

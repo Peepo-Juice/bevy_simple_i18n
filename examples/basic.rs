@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use bevy_simple_i18n::prelude::*;
-use new::{I18nFont, I18nLocale, I18nString};
+use i18n_font::I18nFont;
+use i18n_string::I18nString;
 
 fn main() {
     App::new()
@@ -27,13 +28,9 @@ fn setup(mut commands: Commands) {
         })
         .with_children(|parent| {
             // Basic usage of the i18n text component
+            // relies on every default
             parent.spawn((
                 I18nText::new("hello"),
-                // I18nString::new("hello"),
-                // I18nFont {
-                //     family: "NotoSans".to_string(),
-                //     size: 12.,
-                // },
             ));
 
             // Basic usage of the i18n number component

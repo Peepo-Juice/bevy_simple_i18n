@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
 use bevy_simple_i18n::prelude::*;
-use new::*;
+use i18n_font::I18nFont;
+use i18n_locale::I18nLocale;
+use i18n_string::I18nString;
 
 fn main() {
     App::new()

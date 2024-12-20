@@ -1,5 +1,3 @@
-use super::new::{I18nFont, I18nString, UpdatedFont, UpdatedFontSize};
-use crate::prelude::new::{I18nTranslation, UpdatedTranslation};
 use bevy::prelude::*;
 use bevy::{
     ecs::{component::ComponentId, world::DeferredWorld},
@@ -63,6 +61,11 @@ impl I18nText {
 
 #[cfg(feature = "numbers")]
 use fixed_decimal::FixedDecimal;
+
+use super::i18n_font::UpdatedFont;
+use super::i18n_font_size::UpdatedFontSize;
+use super::i18n_string::I18nString;
+use super::i18n_translation::UpdatedTranslation;
 
 #[derive(Reflect, Debug, Clone)]
 pub enum InterpolationType {
