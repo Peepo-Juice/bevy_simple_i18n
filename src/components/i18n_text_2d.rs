@@ -5,11 +5,12 @@ use super::{
 use bevy::{
     ecs::{component::ComponentId, world::DeferredWorld},
     prelude::*,
+    state::commands,
 };
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-#[require(I18nString)]
+#[require(Text2d, I18nString)]
 #[component(on_add = I18nText2d::on_add_hook)]
 pub struct I18nText2d;
 impl I18nText2d {
@@ -39,9 +40,10 @@ impl I18nText2d {
 
         if let Ok(mut text) = text_q.get_mut(e) {
             text.0 = trigger.0.clone();
-        } else {
-            commands.entity(e).insert(Text2d::new(trigger.0.clone()));
-        }
+        } /* else {
+              // i dont think this ever runs, because of the required component, so might be safe to remove
+              commands.entity(e).insert(Text2d::new(trigger.0.clone()));
+          } */
     }
 
     fn updated_font_size(trigger: Trigger<UpdatedFontSize>, mut text_q: Query<&mut TextFont>) {
@@ -52,11 +54,16 @@ impl I18nText2d {
         }
     }
 
-    fn update_font(trigger: Trigger<UpdatedFont>, mut font_q: Query<&mut TextFont>) {
+    fn update_font(
+        trigger: Trigger<UpdatedFont>,
+        mut font_q: Query<&mut TextFont>,
+        // a: Res<Assets<Font>>,
+    ) {
         let e = trigger.entity();
+        let new_font = trigger.event().0.clone();
 
         if let Ok(mut bevy_font) = font_q.get_mut(e) {
-            bevy_font.font = trigger.event().0.clone();
+            bevy_font.font = new_font;
         }
     }
 }

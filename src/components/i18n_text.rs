@@ -6,7 +6,7 @@ use bevy::{
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-#[require(I18nString)]
+#[require(Text, I18nString)]
 #[component(on_add = I18nText::on_add_hook)]
 pub struct I18nText;
 

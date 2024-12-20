@@ -3,10 +3,7 @@ use crate::prelude::i18n_font_size::{I18nFontSize, UpdatedFontSize};
 use crate::prelude::i18n_locale::{I18nLocale, LocaleExt};
 use crate::prelude::i18n_string::I18nString;
 use crate::prelude::i18n_translation::{I18nTranslation, UpdatedTranslation};
-use crate::prelude::utils::get_formatter;
 use crate::{
-    // components::{I18nFont, I18nNumber, I18nText},
-    // prelude::{new::I18nLocale, I18nComponent, I18nText2d},
     prelude::utils::translate_by_key,
     resources::{FontFolder, FontManager, FontsLoading, I18n},
     FONT_FAMILIES,
@@ -51,8 +48,7 @@ impl Plugin for I18nPlugin {
             .add_systems(PreUpdate, update_font_size)
             .add_systems(
                 PreUpdate,
-                notify_font_change
-                    .run_if(resource_removed::<FontsLoading>.or(resource_changed::<I18n>)),
+                update_font.run_if(resource_removed::<FontsLoading>.or(resource_changed::<I18n>)),
             );
     }
 }
@@ -96,13 +92,15 @@ fn update_font_size(
 }
 
 /// This will update Text and Text2D when Font changes
-fn notify_font_change(
+fn update_font(
     mut commands: Commands,
     font_manager: Res<FontManager>,
     mut query: Query<(Entity, &I18nFont, Option<&I18nLocale>)>,
+    a: Res<Assets<Font>>,
 ) {
     for (e, font, locale) in &mut query {
         let font = font_manager.get(&font.family(), locale.locale());
+
         commands.trigger_targets(UpdatedFont(font), e);
     }
 }

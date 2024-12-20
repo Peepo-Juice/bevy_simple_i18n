@@ -17,3 +17,8 @@ pub mod utils;
 // pub use i18n_number::*;
 pub use i18n_text::*;
 pub use i18n_text_2d::*;
+pub use i18n_font_size::*;
+pub use i18n_font::*;
+pub use i18n_locale::*;
+pub use i18n_string::*;
+pub use i18n_translation::*;

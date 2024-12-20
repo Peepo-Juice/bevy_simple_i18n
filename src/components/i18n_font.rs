@@ -3,6 +3,7 @@ use crate::prelude::FontManager;
 use bevy::{
     ecs::{component::ComponentId, world::DeferredWorld},
     prelude::*,
+    text::TextPipeline,
 };
 
 #[derive(Event, Reflect, Debug, Clone)]
@@ -22,13 +23,12 @@ impl I18nFont {
     }
 }
 fn on_add_font(mut world: DeferredWorld, entity: Entity, _: ComponentId) {
-    let font = world
+    let font_manager = world.resource::<FontManager>();
+    let locale = world.get::<I18nLocale>(entity);
+    let i18n_font = world
         .get::<I18nFont>(entity)
         .expect("I18nString requires this component");
-    let locale = world.get::<I18nLocale>(entity);
 
-    let font_manager = world.resource::<FontManager>();
-    let font = font_manager.get(&font.family(), locale.locale());
-
-    world.trigger_targets(UpdatedFont(font), entity);
+    let font_handle = font_manager.get(&i18n_font.family(), locale.locale());
+    world.trigger_targets(UpdatedFont(font_handle), entity);
 }

@@ -21,7 +21,6 @@ impl LocaleExt for Option<&I18nLocale> {
         if let Some(internal_locale) = &self {
             internal_locale.0.to_string()
         } else {
-            // println!("global {:?} ",  rust_i18n::locale().to_string());
             rust_i18n::locale().to_string()
         }
     }
