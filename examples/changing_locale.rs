@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
 use bevy_simple_i18n::prelude::*;
+use i18n_font::I18nFont;
+use i18n_locale::I18nLocale;
+use i18n_string::I18nString;
 
 fn main() {
     App::new()
@@ -36,7 +39,11 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                 })
                 .with_children(|parent| {
                     parent.spawn(Text::new("'hello' => "));
-                    parent.spawn((I18nText::new("hello"), I18nFont::new("NotoSans")));
+                    parent.spawn((
+                        I18nText,
+                        I18nString::new("hello"),
+                        I18nFont::new("NotoSans"),
+                    ));
                 });
 
             // Basic usage of the i18n number component
@@ -48,7 +55,11 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                 })
                 .with_children(|parent| {
                     parent.spawn(Text::new("24501.20 => "));
-                    parent.spawn((I18nNumber::new(24501.20), I18nFont::new("NotoSans")));
+                    parent.spawn((
+                        I18nText,
+                        I18nString::new("number").with_num_arg("number", 24501.20),
+                        I18nFont::new("NotoSans"),
+                    ));
                 });
 
             // Example that shows variable interpolation
@@ -61,7 +72,8 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                 .with_children(|parent| {
                     parent.spawn(Text::new("'hello, %{name}' => "));
                     parent.spawn((
-                        I18nText::new("messages.hello").with_arg("name", "Bevy User"),
+                        I18nText,
+                        I18nString::new("messages.hello").with_arg("name", "Bevy User"),
                         I18nFont::new("NotoSans"),
                     ));
                 });
@@ -76,7 +88,8 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                 .with_children(|parent| {
                     parent.spawn(Text::new("'You have %{count} cats' => "));
                     parent.spawn((
-                        I18nText::new("messages.cats").with_num_arg("count", 2000.30),
+                        I18nText,
+                        I18nString::new("messages.cats").with_num_arg("count", 2000.30),
                         I18nFont::new("NotoSans"),
                     ));
                 });
@@ -91,8 +104,10 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                 .with_children(|parent| {
                     parent.spawn((Text::new("Always Japanese: "),));
                     parent.spawn((
-                        I18nText::new("hello").with_locale("ja"),
+                        I18nText,
+                        I18nString::new("hello"),
                         I18nFont::new("NotoSans"),
+                        I18nLocale::new("ja"),
                     ));
                 });
 
@@ -123,14 +138,7 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                                 BorderRadius::MAX,
                                 BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
                             ))
-                            .with_child((
-                                Text::new(locale),
-                                TextFont {
-                                    font_size: 50.0,
-                                    ..default()
-                                },
-                                TextColor(Color::srgb(0.9, 0.9, 0.9)),
-                            ));
+                            .with_child((Text::new(locale), TextColor(Color::srgb(0.9, 0.9, 0.9))));
                     }
                 });
         });
@@ -145,7 +153,7 @@ fn button_system(
         match *interaction {
             Interaction::Pressed => {
                 let text = text_query.get(children[0]).unwrap().clone().0;
-                i18n_res.set_locale(text);
+                i18n_res.set_locale(&text);
             }
             _ => {}
         }

@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
 use bevy_simple_i18n::prelude::*;
+use i18n_font::I18nFont;
+use i18n_string::I18nString;
 
 fn main() {
     App::new()
@@ -26,48 +28,34 @@ fn setup(mut commands: Commands) {
         })
         .with_children(|parent| {
             // Basic usage of the i18n text component
+            // relies on every default
             parent.spawn((
-                // i18n text component with key "hello"
                 I18nText::new("hello"),
-                // Dynamic font component with font family "NotoSans" that auto loads font files based on the set locale
-                I18nFont::new("NotoSans"),
-                // You can still insert a TextFont component though
-                // Keep in mind that the "font" field will be overridden by the I18nFont component
-                TextFont {
-                    font_size: 40.0,
-                    ..default()
-                },
             ));
 
             // Basic usage of the i18n number component
-            parent.spawn((I18nNumber::new(24501.20), I18nFont::new("NotoSans")));
+            parent.spawn((
+                I18nText,
+                I18nString::new("number").with_num_arg("number", 24501.20),
+                I18nFont::new("NotoSans"),
+            ));
 
             // Interpolation example
             parent.spawn((
-                // You can add as many arguments as you want to the translation
-                I18nText::new("messages.hello")
-                    .with_arg("name", "Bevy User")
-                    // You can also specify the locale for this specific translation
-                    // This overrides the globally set locale
-                    .with_locale("ja"),
-                // Dynamic font component with font family "NotoSans" that auto loads font files based on the set locale
-                I18nFont::new("NotoSans"),
+                I18nText,
+                I18nString::new("messages.hello").with_arg("name", "Bevy User"),
+                // I18nFont {
+                //     family: "NotoSans".to_string(),
+                //     size: 12.,
+                // },
             ));
         });
 
-        // Basic usage of the Text2d implementation
-        commands.spawn((
-            // I18nText2d component with key "text2d"
-            I18nText2d::new("text2d"),
-            // Dynamic font component with font family "NotoSans" that auto loads font files based on the set locale
-            I18nFont::new("NotoSans"),
-            // You can still insert a TextFont component though
-            // Keep in mind that the "font" field will be overridden by the I18nFont component
-            TextFont {
-                font_size: 40.0,
-                ..default()
-            },
-            // Since we're using Text2d, we add a Transform to set its position
-            Transform::from_xyz(300., 300., 0.)
-        ));
+    // Basic usage of the Text2d implementation
+    commands.spawn((
+        I18nText2d,
+        I18nString::new("text2d"),
+        I18nFont::new("NotoSans"),
+        Transform::from_xyz(300., 300., 0.),
+    ));
 }

@@ -1,26 +1,23 @@
-use std::path::Path;
-
-use bevy::{
-    app::{App, Plugin, PreStartup, Update},
-    asset::{AssetServer, Handle},
-    ecs::{
-        component::Component,
-        schedule::{
-            common_conditions::{resource_changed, resource_exists, resource_removed},
-            IntoSystemConfigs,
-        },
-        system::{Commands, Query, Res, ResMut},
-    },
-    text::{Font, TextFont},
-    ui::widget::Text,
-};
-
+use crate::prelude::i18n_font::{I18nFont, UpdatedFont};
+use crate::prelude::i18n_font_size::{I18nFontSize, UpdatedFontSize};
+use crate::prelude::i18n_locale::{I18nLocale, LocaleExt};
+use crate::prelude::i18n_string::I18nString;
+use crate::prelude::i18n_translation::{I18nTranslation, UpdatedTranslation};
 use crate::{
-    components::{I18nFont, I18nNumber, I18nText},
-    prelude::{I18nComponent, I18nText2d},
+    prelude::utils::translate_by_key,
     resources::{FontFolder, FontManager, FontsLoading, I18n},
     FONT_FAMILIES,
 };
+use bevy::{
+    asset::{AssetServer, Handle},
+    ecs::{
+        schedule::{common_conditions::resource_exists, IntoSystemConfigs},
+        system::{Commands, Query, Res, ResMut},
+    },
+    prelude::*,
+    text::Font,
+};
+use std::path::Path;
 
 /// Initializes the `bevy_simple_i18n` plugin
 ///
@@ -39,50 +36,72 @@ pub struct I18nPlugin;
 
 impl Plugin for I18nPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
-        app.init_resource::<I18n>()
-            .init_resource::<FontManager>()
+        app.init_resource::<FontManager>()
+            .init_resource::<I18n>()
             .init_resource::<FontsLoading>()
             .add_systems(PreStartup, load_dynamic_fonts)
-            .register_i18n_component::<I18nText>()
-            .register_i18n_component::<I18nText2d>()
-            .register_i18n_component::<I18nNumber>()
             .add_systems(
                 Update,
                 monitor_font_loading.run_if(resource_exists::<FontsLoading>),
+            )
+            .add_systems(PreUpdate, update_translations)
+            .add_systems(PreUpdate, update_font_size)
+            .add_systems(
+                PreUpdate,
+                update_font.run_if(resource_removed::<FontsLoading>.or(resource_changed::<I18n>)),
             );
     }
 }
 
-pub trait I18nComponentRegistration {
-    /// Registers an i18n component for automatic translation updates
-    fn register_i18n_component<T: I18nComponent + Component>(&mut self) -> &mut Self;
-}
+// this should be handled by observers, but they are not powerful enough yet
+fn update_translations(
+    mut commands: Commands,
+    // font_manager: bevy::ecs::system::Res<FontManager>,
+    i18n: Res<I18n>,
+    changed_query: Query<(), Or<(Changed<I18nString>, Changed<I18nLocale>)>>,
+    mut text_query: Query<(
+        Entity,
+        &I18nString,
+        &mut I18nTranslation,
+        Option<&I18nLocale>,
+    )>,
+) {
+    bevy::log::debug!("Updating translations");
 
-impl I18nComponentRegistration for App {
-    fn register_i18n_component<T: I18nComponent + Component>(&mut self) -> &mut Self {
-        self.add_systems(
-            Update,
-            (
-                update_text_translations::<T>.run_if(resource_removed::<FontsLoading>),
-                update_text_translations::<T>.run_if(resource_changed::<I18n>),
-            ),
-        )
+    // currently this always iterates over every entity
+    // it would be nice if it didnt do that if a single entity was changed
+    if i18n.is_changed() || !changed_query.is_empty() {
+        for (entity, string, mut translation, locale) in &mut text_query {
+            let new_text = translate_by_key(&locale.locale(), &string.key, &string.args);
+            // only update if the text has changed
+            if translation.translation().cmp(&new_text).is_ne() {
+                translation.set(&new_text);
+                commands.trigger_targets(UpdatedTranslation(new_text), entity);
+            }
+        }
     }
 }
 
-/// Auto updates the translations for components that have the [I18nComponent] trait
-/// and have been registered with the Bevy [App] using the [register_i18n_component] method
-/// whenever the [I18n] resource changes
-fn update_text_translations<T: I18nComponent + Component>(
-    font_manager: bevy::ecs::system::Res<FontManager>,
-    mut text_query: Query<(&mut Text, &mut TextFont, Option<&I18nFont>, &T)>,
+fn update_font_size(
+    mut commands: Commands,
+    changed_query: Query<(Entity, &I18nFontSize), Changed<I18nFontSize>>,
 ) {
-    bevy::log::debug!("Updating translations");
-    for (mut text, mut text_font, dyn_font, key) in text_query.iter_mut() {
-        text.0 = key.translate();
-        if let Some(dyn_font) = dyn_font {
-            text_font.font = font_manager.get(&dyn_font.0, key.locale());
-        }
+    for (e, font) in &changed_query {
+        commands.trigger_targets(UpdatedFontSize(font.0), e);
+    }
+}
+
+/// This will update Text and Text2D when Font changes
+fn update_font(
+    mut commands: Commands,
+    font_manager: Res<FontManager>,
+    mut query: Query<(Entity, &I18nFont, Option<&I18nLocale>)>,
+    a: Res<Assets<Font>>,
+) {
+    for (e, font, locale) in &mut query {
+        let font = font_manager.get(&font.family(), locale.locale());
+
+        commands.trigger_targets(UpdatedFont(font), e);
     }
 }
 
@@ -104,7 +123,7 @@ fn load_dynamic_fonts(
             let handler: Handle<Font> = asset_server.load(path);
             font_folder.fonts.insert(locale.to_string(), handler);
         }
-        font_manager.insert(dyn_font.family.to_string(), font_folder);
+        font_manager.insert(dyn_font.family, font_folder);
     }
 }
 
