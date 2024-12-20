@@ -28,8 +28,8 @@ fn setup(mut commands: Commands) {
         .with_children(|parent| {
             // Basic usage of the i18n text component
             parent.spawn((
-                I18nText,
-                I18nString::new("hello"),
+                I18nText::new("hello"),
+                // I18nString::new("hello"),
                 // I18nFont {
                 //     family: "NotoSans".to_string(),
                 //     size: 12.,
@@ -40,10 +40,7 @@ fn setup(mut commands: Commands) {
             parent.spawn((
                 I18nText,
                 I18nString::new("number").with_num_arg("number", 24501.20),
-                I18nFont {
-                    family: "NotoSans".to_string(),
-                    size: 12.,
-                },
+                I18nFont::new("NotoSans"),
             ));
 
             // Interpolation example
@@ -61,10 +58,7 @@ fn setup(mut commands: Commands) {
     commands.spawn((
         I18nText2d,
         I18nString::new("text2d"),
-        I18nFont {
-            family: "NotoSans".to_string(),
-            size: 36.,
-        },
+        I18nFont::new("NotoSans"),
         Transform::from_xyz(300., 300., 0.),
     ));
 }

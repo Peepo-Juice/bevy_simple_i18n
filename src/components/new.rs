@@ -1,16 +1,15 @@
 use crate::prelude::utils::translate_by_key;
+use crate::prelude::FontManager;
 
-use super::utils::f64_to_fd;
 use super::InterpolationType;
 use bevy::ecs::component::ComponentId;
 use bevy::ecs::world::DeferredWorld;
 use bevy::prelude::*;
 use bevy::reflect::Reflect;
-use fixed_decimal::FixedDecimal;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-#[require(I18nFont(|| I18nFont{size: 12., ..default()}), I18nTranslation)]
+#[require(I18nFont, I18nFontSize(|| I18nFontSize(12.)), I18nTranslation)]
 pub struct I18nString {
     /// Translation key for i18n
     pub key: String,
@@ -44,26 +43,52 @@ impl I18nString {
     }
 }
 
-// #[derive(Component, Default, Reflect, Debug, Clone)]
-// #[reflect(Component)]
-// #[require(I18nFont, I18nTranslation)]
-// pub struct I18nNumber {
-//     #[reflect(ignore)]
-//     pub(crate) fixed_decimal: FixedDecimal,
-// }
-// impl I18nNumber {
-//     pub fn new(number: impl Into<f64>) -> Self {
-//         Self {
-//             fixed_decimal: f64_to_fd(number.into()),
-//         }
-//     }
-// }
+#[derive(Event, Reflect, Debug, Clone)]
+pub struct UpdatedFont(pub Handle<Font>);
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
-pub struct I18nFont {
-    pub family: String,
-    pub size: f32,
+#[component(on_add = on_add_font)]
+pub struct I18nFont(String);
+impl I18nFont {
+    pub fn new(family: impl Into<String>) -> Self {
+        Self(family.into())
+    }
+
+    pub fn family(&self) -> &String {
+        &self.0
+    }
+}
+fn on_add_font(mut world: DeferredWorld, entity: Entity, _: ComponentId) {
+    let font = world
+        .get::<I18nFont>(entity)
+        .expect("I18nString requires this component");
+    let locale = world.get::<I18nLocale>(entity);
+
+    let font_manager = world.resource::<FontManager>();
+    let font = font_manager.get(&font.family(), locale.locale());
+
+    world.trigger_targets(UpdatedFont(font), entity);
+}
+
+#[derive(Event, Reflect, Debug, Clone)]
+pub struct UpdatedFontSize(pub f32);
+
+#[derive(Component, Default, Reflect, Debug, Clone)]
+#[reflect(Component)]
+#[component(on_add = on_add_font_size)]
+pub struct I18nFontSize(pub f32);
+impl I18nFontSize {
+    pub fn new(size: f32) -> Self {
+        Self(size.into())
+    }
+}
+fn on_add_font_size(mut world: DeferredWorld, entity: Entity, _: ComponentId) {
+    let font = world
+        .get::<I18nFontSize>(entity)
+        .expect("I18nString requires this component");
+
+    world.trigger_targets(UpdatedFontSize(font.0), entity);
 }
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
@@ -78,11 +103,11 @@ impl I18nLocale {
         self.0 = locale;
     }
 }
-pub trait LocalExt {
+pub trait LocaleExt {
     fn locale(&self) -> String;
 }
 
-impl LocalExt for Option<&I18nLocale> {
+impl LocaleExt for Option<&I18nLocale> {
     fn locale(&self) -> String {
         if let Some(internal_locale) = &self {
             internal_locale.0.to_string()
@@ -94,7 +119,7 @@ impl LocalExt for Option<&I18nLocale> {
 }
 
 #[derive(Event, Reflect, Debug, Clone)]
-pub struct UpdatedTranslation(pub Entity);
+pub struct UpdatedTranslation(pub String);
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
@@ -105,11 +130,11 @@ impl I18nTranslation {
         Self(new)
     }
 
-    pub fn set(&mut self, new: String) {
-        self.0 = new;
+    pub fn set(&mut self, new: impl Into<String>) {
+        self.0 = new.into();
     }
 
-    pub fn value(&self) -> &str {
+    pub fn translation(&self) -> &str {
         &self.0
     }
 }
@@ -123,7 +148,7 @@ fn on_add_translation(mut world: DeferredWorld, entity: Entity, _: ComponentId) 
     let translated_txt = translate_by_key(&locale.locale(), &string.key, &string.args);
 
     let mut translated = world.get_mut::<I18nTranslation>(entity).unwrap();
-    translated.set(translated_txt);
+    translated.set(&translated_txt);
 
-    world.trigger_targets(UpdatedTranslation(entity), entity);
+    world.trigger_targets(UpdatedTranslation(translated_txt), entity);
 }
