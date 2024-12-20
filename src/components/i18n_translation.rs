@@ -21,7 +21,7 @@ impl I18nTranslation {
         Self(new)
     }
 
-    pub fn set(&mut self, new: impl Into<String>) {
+    pub fn set(&mut self, new: &str) {
         self.0 = new.into();
     }
 

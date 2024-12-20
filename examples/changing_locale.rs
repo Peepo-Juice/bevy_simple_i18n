@@ -153,7 +153,7 @@ fn button_system(
         match *interaction {
             Interaction::Pressed => {
                 let text = text_query.get(children[0]).unwrap().clone().0;
-                i18n_res.set_locale(text);
+                i18n_res.set_locale(&text);
             }
             _ => {}
         }

@@ -14,14 +14,14 @@ pub struct I18nString {
     pub args: Vec<(String, InterpolationType)>,
 }
 impl I18nString {
-    pub fn new(str: impl Into<String>) -> Self {
+    pub fn new(str: &str) -> Self {
         Self {
             key: str.into(),
             args: vec![],
         }
     }
 
-    pub fn with_arg(mut self, key: impl Into<String>, value: impl ToString) -> Self {
+    pub fn with_arg(mut self, key: &str, value: impl ToString) -> Self {
         self.args
             .push((key.into(), InterpolationType::String(value.to_string())));
         self
@@ -31,7 +31,7 @@ impl I18nString {
     /// Add a number interpolation argument to the translation key
     ///
     /// This method can be called as many times as needed
-    pub fn with_num_arg(mut self, key: impl Into<String>, value: impl Into<f64>) -> Self {
+    pub fn with_num_arg(mut self, key: &str, value: impl Into<f64>) -> Self {
         self.args.push((
             key.into(),
             InterpolationType::Number(super::utils::f64_to_fd(value.into())),

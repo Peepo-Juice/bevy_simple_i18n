@@ -123,7 +123,7 @@ fn load_dynamic_fonts(
             let handler: Handle<Font> = asset_server.load(path);
             font_folder.fonts.insert(locale.to_string(), handler);
         }
-        font_manager.insert(dyn_font.family.to_string(), font_folder);
+        font_manager.insert(dyn_font.family, font_folder);
     }
 }
 

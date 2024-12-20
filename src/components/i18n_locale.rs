@@ -4,7 +4,7 @@ use bevy::prelude::*;
 #[reflect(Component)]
 pub struct I18nLocale(String);
 impl I18nLocale {
-    pub fn new(locale: impl Into<String>) -> Self {
+    pub fn new(locale: &str) -> Self {
         Self(locale.into())
     }
 

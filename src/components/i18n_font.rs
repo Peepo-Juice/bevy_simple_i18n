@@ -14,11 +14,11 @@ pub struct UpdatedFont(pub Handle<Font>);
 #[component(on_add = on_add_font)]
 pub struct I18nFont(String);
 impl I18nFont {
-    pub fn new(family: impl Into<String>) -> Self {
+    pub fn new(family: &str) -> Self {
         Self(family.into())
     }
 
-    pub fn family(&self) -> &String {
+    pub fn family(&self) -> &str {
         &self.0
     }
 }

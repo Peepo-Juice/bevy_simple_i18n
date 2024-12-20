@@ -11,7 +11,7 @@ use bevy::{
 pub struct I18nText;
 
 impl I18nText {
-    pub fn new(key: impl Into<String>) -> (Self, I18nString) {
+    pub fn new(key: &str) -> (Self, I18nString) {
         (I18nText, I18nString::new(key))
     }
 

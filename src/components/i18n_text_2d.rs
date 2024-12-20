@@ -14,7 +14,7 @@ use bevy::{
 #[component(on_add = I18nText2d::on_add_hook)]
 pub struct I18nText2d;
 impl I18nText2d {
-    pub fn new(key: impl Into<String>) -> (Self, I18nString) {
+    pub fn new(key: &str) -> (Self, I18nString) {
         (I18nText2d, I18nString::new(key))
     }
 
