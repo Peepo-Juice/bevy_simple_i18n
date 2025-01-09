@@ -29,14 +29,12 @@ fn setup(mut commands: Commands) {
         .with_children(|parent| {
             // Basic usage of the i18n text component
             // relies on every default
-            parent.spawn((
-                I18nText::new("hello"),
-            ));
+            parent.spawn((I18nText::new("hello"),));
 
             // Basic usage of the i18n number component
             parent.spawn((
                 I18nText,
-                I18nString::new("number").with_num_arg("number", 24501.20),
+                I18nString::new("number").with_float_arg("number", 24501.20),
                 I18nFont::new("NotoSans"),
             ));
 

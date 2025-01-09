@@ -57,7 +57,7 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                     parent.spawn(Text::new("24501.20 => "));
                     parent.spawn((
                         I18nText,
-                        I18nString::new("number").with_num_arg("number", 24501.20),
+                        I18nString::new("number").with_float_arg("number", 24501.20),
                         I18nFont::new("NotoSans"),
                     ));
                 });
@@ -89,7 +89,7 @@ fn setup(mut commands: Commands, i18n_res: Res<I18n>) {
                     parent.spawn(Text::new("'You have %{count} cats' => "));
                     parent.spawn((
                         I18nText,
-                        I18nString::new("messages.cats").with_num_arg("count", 2000.30),
+                        I18nString::new("messages.cats").with_float_arg("count", 2000.30),
                         I18nFont::new("NotoSans"),
                     ));
                 });

@@ -1,13 +1,19 @@
+use super::InterpolationType;
+use fixed_decimal::FixedDecimal;
 use rust_i18n::t;
 
-use super::InterpolationType;
-
-// use super::InterpolationType;
-
 #[cfg(feature = "numbers")]
-pub(super) fn f64_to_fd(value: f64) -> fixed_decimal::FixedDecimal {
+pub(super) fn f64_to_fd(value: f64) -> FixedDecimal {
     fixed_decimal::FixedDecimal::try_from_f64(value, fixed_decimal::FloatPrecision::Floating)
         .expect(format!("Failed to parse FixedDecimal from f64: {}", value).as_str())
+}
+
+#[cfg(feature = "numbers")]
+pub(super) fn int_to_fd<T>(value: T) -> FixedDecimal
+where
+    FixedDecimal: From<T>,
+{
+    FixedDecimal::from(value)
 }
 
 #[cfg(feature = "numbers")]

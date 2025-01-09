@@ -3,6 +3,7 @@ use super::{
     InterpolationType,
 };
 use bevy::prelude::*;
+use fixed_decimal::FixedDecimal;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
 #[reflect(Component)]
@@ -31,7 +32,22 @@ impl I18nString {
     /// Add a number interpolation argument to the translation key
     ///
     /// This method can be called as many times as needed
-    pub fn with_num_arg(mut self, key: &str, value: impl Into<f64>) -> Self {
+    pub fn with_int_arg<T>(mut self, key: &str, value: T) -> Self
+    where
+        FixedDecimal: From<T>,
+    {
+        self.args.push((
+            key.into(),
+            InterpolationType::Number(super::utils::int_to_fd(value)),
+        ));
+        self
+    }
+
+    #[cfg(feature = "numbers")]
+    /// Add a number interpolation argument to the translation key
+    ///
+    /// This method can be called as many times as needed
+    pub fn with_float_arg(mut self, key: &str, value: impl Into<f64>) -> Self {
         self.args.push((
             key.into(),
             InterpolationType::Number(super::utils::f64_to_fd(value.into())),
