@@ -3,6 +3,7 @@ use crate::prelude::i18n_font_size::{I18nFontSize, UpdatedFontSize};
 use crate::prelude::i18n_locale::{I18nLocale, LocaleExt};
 use crate::prelude::i18n_string::I18nString;
 use crate::prelude::i18n_translation::{I18nTranslation, UpdatedTranslation};
+use crate::prelude::{I18nText, I18nText2d};
 use crate::{
     prelude::utils::translate_by_key,
     resources::{FontFolder, FontManager, FontsLoading, I18n},
@@ -37,6 +38,12 @@ pub struct I18nPlugin;
 impl Plugin for I18nPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
         app.init_resource::<FontManager>()
+            .register_type::<I18nFontSize>()
+            .register_type::<I18nFont>()
+            .register_type::<I18nLocale>()
+            .register_type::<I18nText2d>()
+            .register_type::<I18nText>()
+            .register_type::<I18nTranslation>()
             .init_resource::<I18n>()
             .init_resource::<FontsLoading>()
             .add_systems(PreStartup, load_dynamic_fonts)
