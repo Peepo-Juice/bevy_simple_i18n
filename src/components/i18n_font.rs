@@ -10,7 +10,7 @@ use bevy::{
 pub struct UpdatedFont(pub Handle<Font>);
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 #[component(on_add = on_add_font)]
 pub struct I18nFont(String);
 impl I18nFont {

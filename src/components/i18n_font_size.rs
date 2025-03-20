@@ -7,7 +7,7 @@ use bevy::{
 pub struct UpdatedFontSize(pub f32);
 
 #[derive(Component, Default, Reflect, Debug, Clone, Copy)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 #[component(on_add = on_add_font_size)]
 pub struct I18nFontSize(pub f32);
 impl I18nFontSize {

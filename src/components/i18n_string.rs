@@ -6,7 +6,7 @@ use bevy::prelude::*;
 use fixed_decimal::FixedDecimal;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 #[require(I18nFont, I18nFontSize(|| I18nFontSize(12.)), I18nTranslation)]
 pub struct I18nString {
     /// Translation key for i18n

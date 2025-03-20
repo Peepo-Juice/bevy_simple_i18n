@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub struct I18nLocale(String);
 impl I18nLocale {
     pub fn new(locale: &str) -> Self {

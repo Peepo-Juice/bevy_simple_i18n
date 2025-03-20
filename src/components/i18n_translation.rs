@@ -13,7 +13,7 @@ use super::{
 pub struct UpdatedTranslation(pub String);
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 #[component(on_add = on_add_translation)]
 pub struct I18nTranslation(String);
 impl I18nTranslation {

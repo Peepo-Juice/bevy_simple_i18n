@@ -9,7 +9,7 @@ use bevy::{
 };
 
 #[derive(Component, Default, Reflect, Debug, Clone)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 #[require(Text2d, I18nString)]
 #[component(on_add = I18nText2d::on_add_hook)]
 pub struct I18nText2d;

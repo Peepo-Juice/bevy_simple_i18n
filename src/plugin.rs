@@ -43,7 +43,9 @@ impl Plugin for I18nPlugin {
             .register_type::<I18nLocale>()
             .register_type::<I18nText2d>()
             .register_type::<I18nText>()
+            .register_type::<I18nString>()
             .register_type::<I18nTranslation>()
+
             .init_resource::<I18n>()
             .init_resource::<FontsLoading>()
             .add_systems(PreStartup, load_dynamic_fonts)
