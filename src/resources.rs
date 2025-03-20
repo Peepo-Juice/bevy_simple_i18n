@@ -25,7 +25,7 @@ pub struct I18n {
 }
 
 impl I18n {
-    pub fn set_locale(&mut self, locale: impl Into<String>) {
+    pub fn set_locale(&mut self, locale: &str) {
         let next_locale: String = locale.into();
         if let Err(err) = next_locale.parse::<Locale>() {
             bevy::log::error!("Invalid locale: {}", err);
@@ -73,7 +73,7 @@ pub(crate) struct FontFolder {
 }
 
 impl FontFolder {
-    pub(crate) fn get(&self, locale: impl Into<String>) -> Handle<Font> {
+    pub(crate) fn get(&self, locale: &str) -> Handle<Font> {
         let locale: String = locale.into();
         let mut locale = locale.as_str();
 
@@ -104,7 +104,7 @@ pub(crate) struct FontManager {
 }
 
 impl FontManager {
-    pub(crate) fn insert(&mut self, family: impl Into<String>, font_folder: FontFolder) {
+    pub(crate) fn insert(&mut self, family: &str, font_folder: FontFolder) {
         let family: String = family.into();
         bevy::log::debug!("Font family {} added", family);
         self.fonts.insert(family, font_folder);
@@ -113,7 +113,7 @@ impl FontManager {
     pub(crate) fn get(&self, family: &str, locale: String) -> Handle<Font> {
         if let Some(folder) = self.fonts.get(family) {
             bevy::log::debug!("Found font family: {}", family);
-            folder.get(locale)
+            folder.get(&locale)
         } else {
             bevy::log::debug!("Font {} was not found, using default", family);
             Handle::<Font>::default()
